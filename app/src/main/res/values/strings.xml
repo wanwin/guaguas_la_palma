@@ -3,4 +3,5 @@
     <string name="busStops">Ver paradas de guagua</string>
     <string name="busSchedules">Ver horarios</string>
     <string name="busStopsLayer">https://services.arcgis.com/hkQNLKNeDVYBjvFE/arcgis/rest/services/Transportes/FeatureServer/1</string>
+    <string name="location_permission_denied">No se ha podido mostrar su ubicación debido a que el permiso para obtener la misma ha sido rechazado</string>
 </resources>
