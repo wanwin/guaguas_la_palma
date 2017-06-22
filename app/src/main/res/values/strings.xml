@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">GuaguasLaPalma</string>
-    <string name="busStops">Ver paradas de guagua</string>
-    <string name="busSchedules">Ver horarios</string>
+    <string name="busStops">Localizar paradas cercanas</string>
+    <string name="busSchedulesAndStops">Ver horarios y paradas</string>
     <string name="busStopsLayer">https://services.arcgis.com/hkQNLKNeDVYBjvFE/arcgis/rest/services/Transportes/FeatureServer/1</string>
     <string name="location_permission_denied">No se ha podido mostrar su ubicación debido a que el permiso para obtener la misma ha sido rechazado</string>
+    <string name="labourDayStopsAndSchedules">LABORABLES</string>
+    <string name="saturdayStopsAndSchedules">SÁBADOS</string>
+    <string name="sundayAndHolidayStopsAndSchedules">DOMINGOS Y FESTIVOS</string>
 </resources>

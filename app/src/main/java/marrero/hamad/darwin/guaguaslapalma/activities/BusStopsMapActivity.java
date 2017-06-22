@@ -11,7 +11,6 @@ import android.widget.AdapterView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.geometry.SpatialReference;
@@ -23,15 +22,14 @@ import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.LocationDisplay;
 import com.esri.arcgisruntime.mapping.view.MapView;
 import java.util.ArrayList;
-
-import marrero.hamad.darwin.guaguaslapalma.R;
 import marrero.hamad.darwin.guaguaslapalma.model.ItemData;
 import marrero.hamad.darwin.guaguaslapalma.model.SpinnerAdapter;
+import marrero.hamad.darwin.guaguaslapalma.R;
 import android.support.annotation.NonNull;
 
 import static com.esri.arcgisruntime.mapping.view.LocationDisplay.*;
 
-public class BusStopActivity extends AppCompatActivity {
+public class BusStopsMapActivity extends AppCompatActivity {
 
     private MapView mapView;
     private FeatureLayer featureLayer;
@@ -139,7 +137,7 @@ public class BusStopActivity extends AppCompatActivity {
                 else {
                     String message = String.format("Error in DataSourceStatusChangedListener: %s", dataSourceStatusChangedEvent
                             .getSource().getLocationDataSource().getError().getMessage());
-                    Toast.makeText(BusStopActivity.this, message, Toast.LENGTH_LONG).show();
+                    Toast.makeText(BusStopsMapActivity.this, message, Toast.LENGTH_LONG).show();
                     spinner.setSelection(0, true);
                 }
             }
@@ -149,12 +147,12 @@ public class BusStopActivity extends AppCompatActivity {
             }
 
             private boolean isPermissionGranted(String reqPermission) {
-                return ContextCompat.checkSelfPermission(BusStopActivity.this, reqPermission) ==
+                return ContextCompat.checkSelfPermission(BusStopsMapActivity.this, reqPermission) ==
                         PackageManager.PERMISSION_GRANTED;
             }
 
             private void requestPermissionToUser() {
-                ActivityCompat.requestPermissions(BusStopActivity.this, reqPermissions, requestCode);
+                ActivityCompat.requestPermissions(BusStopsMapActivity.this, reqPermissions, requestCode);
             }
         });
     }
@@ -164,7 +162,7 @@ public class BusStopActivity extends AppCompatActivity {
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             locationDisplay.startAsync();
         } else {
-            Toast.makeText(BusStopActivity.this, getResources().getString(R.string.location_permission_denied), Toast
+            Toast.makeText(BusStopsMapActivity.this, getResources().getString(R.string.location_permission_denied), Toast
                     .LENGTH_SHORT).show();
             spinner.setSelection(0, true);
         }

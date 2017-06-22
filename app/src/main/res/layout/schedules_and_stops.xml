@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView android:id="@+id/labourDayStopsAndSchedulesTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/labourDayStopsAndSchedules"
+            android:textColor="@color/black"
+            android:textSize="20sp"/>
+        <TextView android:id="@+id/labourDaySchedules"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="20sp"/>
+        <TextView android:id="@+id/labourDayStops"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="20sp"/>
+        <TextView android:id="@+id/saturdayStopsAndSchedulesTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/saturdayStopsAndSchedules"
+            android:textColor="@color/black"
+            android:textSize="20sp"/>
+        <TextView android:id="@+id/saturdaySchedules"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="20sp"/>
+        <TextView
+            android:id="@+id/saturdayStops"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+        <TextView android:id="@+id/sundayAndHolidayStopsAndSchedulesTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sundayAndHolidayStopsAndSchedules"
+            android:textColor="@color/black"
+            android:textSize="20sp"/>
+        <TextView
+            android:id="@+id/sundayAndHolidaySchedules"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:id="@+id/sundayAndHolidayStops"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="20sp"/>
+        <!--<ListView android:id="@+id/schedulesAndStopsList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </ListView>-->
+    </LinearLayout>
+</ScrollView>

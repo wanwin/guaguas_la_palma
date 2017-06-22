@@ -22,7 +22,7 @@ public class GuaguasLaPalmaDB extends SQLiteOpenHelper {
                 ", hour TEXT NOT NULL, " + "route_id INTEGER NOT NULL, " +
                 "day_of_week TEXT NOT NULL, " + "FOREIGN KEY(route_id) REFERENCES Routes(id), " +
                 "CONSTRAINT schedules_pk PRIMARY KEY (id))";
-        sqlCreateStopsTable = "CREATE TABLE Stops (id INTEGER, name TEXT NOT NULL, " +
+        sqlCreateStopsTable = "CREATE TABLE Stops (id INTEGER AUTOINCREMENT, name TEXT NOT NULL, " +
                 "route_id INTEGER NOT NULL, " + "stops_order INTEGER NOT NULL, " +
                 "FOREIGN KEY(route_id) REFERENCES Routes(id), " +
                 "CONSTRAINT stops_pk PRIMARY KEY (id))";
