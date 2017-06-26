@@ -13,16 +13,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="marrero.hamad.darwin.guaguaslapalma.activities.MainActivity">
+        <activity android:name="marrero.hamad.darwin.guaguaslapalma.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="marrero.hamad.darwin.guaguaslapalma.activities.BusLineActivity" />
-        <activity android:name="marrero.hamad.darwin.guaguaslapalma.activities.BusStopsMapActivity" />
-        <activity android:name="marrero.hamad.darwin.guaguaslapalma.activities.ScheduleAndStopActivity" />
-        <activity android:name="marrero.hamad.darwin.guaguaslapalma.activities.RouteActivity" />
+        <activity android:name="marrero.hamad.darwin.guaguaslapalma.activity.BusLineActivity" />
+        <activity android:name="marrero.hamad.darwin.guaguaslapalma.activity.BusStopsMapActivity" />
+        <activity android:name="marrero.hamad.darwin.guaguaslapalma.activity.ScheduleAndStopActivity" />
+        <activity android:name="marrero.hamad.darwin.guaguaslapalma.activity.RouteActivity" />
     </application>
 </manifest>

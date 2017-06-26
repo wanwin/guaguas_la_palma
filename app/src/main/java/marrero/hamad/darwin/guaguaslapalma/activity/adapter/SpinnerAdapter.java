@@ -1,4 +1,4 @@
-package marrero.hamad.darwin.guaguaslapalma.model;
+package marrero.hamad.darwin.guaguaslapalma.activity.adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.ArrayList;
 import marrero.hamad.darwin.guaguaslapalma.R;
+import marrero.hamad.darwin.guaguaslapalma.model.ItemData;
 
 public class SpinnerAdapter extends ArrayAdapter<ItemData> {
     private final int groupid;
@@ -25,7 +26,7 @@ public class SpinnerAdapter extends ArrayAdapter<ItemData> {
         this.groupid = groupid;
     }
 
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         View itemView = inflater.inflate(groupid, parent, false);
         ImageView imageView = (ImageView) itemView.findViewById(R.id.img);
         imageView.setImageResource(list.get(position).getImageId());

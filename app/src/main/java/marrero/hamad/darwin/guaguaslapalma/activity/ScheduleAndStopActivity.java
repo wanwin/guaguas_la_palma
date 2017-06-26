@@ -1,4 +1,4 @@
-package marrero.hamad.darwin.guaguaslapalma.activities;
+package marrero.hamad.darwin.guaguaslapalma.activity;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,15 +10,12 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
-
 import marrero.hamad.darwin.guaguaslapalma.db.GuaguasLaPalmaDB;
 import marrero.hamad.darwin.guaguaslapalma.R;
 
 public class ScheduleAndStopActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks{
 
-    /*ListView stopsAndScheduleList;
-    CursorAdapter adapter;*/
     TextView labourDaySchedules, labourDayStops;
     TextView saturdaySchedules, saturdayStops;
     TextView sundayAndHolidaySchedules, sundayAndHolidayStops;
@@ -43,7 +40,7 @@ public class ScheduleAndStopActivity extends AppCompatActivity
         return new CursorLoader(this, null, null, null, null, null) {
             @Override
             public Cursor loadInBackground() {
-                GuaguasLaPalmaDB connection = new GuaguasLaPalmaDB(getContext(), "BusDB", null, 1);
+                GuaguasLaPalmaDB connection = new GuaguasLaPalmaDB(getContext());
                 SQLiteDatabase db = connection.getReadableDatabase();
                 Bundle extras = getIntent().getExtras();
                 String routeID = extras.getString("id");

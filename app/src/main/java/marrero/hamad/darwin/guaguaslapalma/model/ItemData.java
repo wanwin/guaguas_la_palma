@@ -10,11 +10,11 @@ public class ItemData {
         this.imageId = imageId;
     }
 
-    String getText() {
+    public String getText(){
         return text;
     }
 
-    Integer getImageId() {
+    public Integer getImageId(){
         return imageId;
     }
 }

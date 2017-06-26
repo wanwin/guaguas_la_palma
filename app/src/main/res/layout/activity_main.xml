@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context="marrero.hamad.darwin.guaguaslapalma.activities.MainActivity">
+    tools:context="marrero.hamad.darwin.guaguaslapalma.activity.MainActivity">
     <Button android:id="@+id/busStopsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

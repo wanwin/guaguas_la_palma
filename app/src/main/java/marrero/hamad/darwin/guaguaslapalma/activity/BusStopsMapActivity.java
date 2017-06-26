@@ -1,8 +1,9 @@
-package marrero.hamad.darwin.guaguaslapalma.activities;
+package marrero.hamad.darwin.guaguaslapalma.activity;
 
 import android.content.pm.PackageManager;
 import android.Manifest;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -18,21 +19,18 @@ import com.esri.arcgisruntime.geometry.SpatialReferences;
 import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
-import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.LocationDisplay;
 import com.esri.arcgisruntime.mapping.view.MapView;
+import com.esri.arcgisruntime.mapping.Viewpoint;
 import java.util.ArrayList;
 import marrero.hamad.darwin.guaguaslapalma.model.ItemData;
-import marrero.hamad.darwin.guaguaslapalma.model.SpinnerAdapter;
+import marrero.hamad.darwin.guaguaslapalma.activity.adapter.SpinnerAdapter;
 import marrero.hamad.darwin.guaguaslapalma.R;
-import android.support.annotation.NonNull;
-
 import static com.esri.arcgisruntime.mapping.view.LocationDisplay.*;
 
 public class BusStopsMapActivity extends AppCompatActivity {
 
     private MapView mapView;
-    private FeatureLayer featureLayer;
     private LocationDisplay locationDisplay;
     private Spinner spinner;
     private ProgressBar progressBar;
@@ -40,7 +38,7 @@ public class BusStopsMapActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.bus_stops);
+        setContentView(R.layout.bus_stops_map);
         mapView = (MapView) findViewById(R.id.mapView);
         spinner = (Spinner) findViewById(R.id.spinner);
         //progressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -50,7 +48,7 @@ public class BusStopsMapActivity extends AppCompatActivity {
         String serviceFeatureTableURL = getResources().getString(R.string.busStopsLayer);
         ServiceFeatureTable featureTable = new ServiceFeatureTable(serviceFeatureTableURL);
         featureTable.setFeatureRequestMode(ServiceFeatureTable.FeatureRequestMode.ON_INTERACTION_CACHE);
-        featureLayer = new FeatureLayer(featureTable);
+        FeatureLayer featureLayer = new FeatureLayer(featureTable);
         featureLayer.setMinScale(200000);
         //PopupDefinition popupDefinition = new PopupDefinition(featureLayer);
         //featureLayer.setPopupDefinition(popupDefinition);

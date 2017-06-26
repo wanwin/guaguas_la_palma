@@ -1,4 +1,4 @@
-package marrero.hamad.darwin.guaguaslapalma.model;
+package marrero.hamad.darwin.guaguaslapalma.activity.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,12 +7,11 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CursorAdapter;
 import android.widget.TextView;
 import marrero.hamad.darwin.guaguaslapalma.R;
-import marrero.hamad.darwin.guaguaslapalma.activities.ScheduleAndStopActivity;
+import marrero.hamad.darwin.guaguaslapalma.activity.ScheduleAndStopActivity;
 
-public class RouteAdapter extends CursorAdapter{
+public class RouteAdapter extends CustomCursorAdapter{
 
     private LayoutInflater mInflater;
 
@@ -31,8 +30,7 @@ public class RouteAdapter extends CursorAdapter{
         routeTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, ScheduleAndStopActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                Intent intent = createIntent(context, ScheduleAndStopActivity.class);
                 intent.putExtra("id", id);
                 context.startActivity(intent);
             }
