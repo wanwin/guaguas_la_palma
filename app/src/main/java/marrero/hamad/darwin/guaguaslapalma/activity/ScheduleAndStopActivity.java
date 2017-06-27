@@ -10,6 +10,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
+
 import marrero.hamad.darwin.guaguaslapalma.db.GuaguasLaPalmaDB;
 import marrero.hamad.darwin.guaguaslapalma.R;
 
@@ -19,17 +20,24 @@ public class ScheduleAndStopActivity extends AppCompatActivity
     TextView labourDaySchedules, labourDayStops;
     TextView saturdaySchedules, saturdayStops;
     TextView sundayAndHolidaySchedules, sundayAndHolidayStops;
+    String routeID, routeName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.schedules_and_stops);
+        Bundle extras = getIntent().getExtras();
+        routeID = extras.getString("id");
+        routeName = extras.getString("name");
+        setTitle(routeName);
         labourDaySchedules = (TextView) findViewById(R.id.labourDaySchedules);
         labourDayStops = (TextView) findViewById(R.id.labourDayStops);
         saturdaySchedules = (TextView) findViewById(R.id.saturdaySchedules);
         saturdayStops = (TextView) findViewById(R.id.saturdayStops);
         sundayAndHolidaySchedules = (TextView) findViewById(R.id.sundayAndHolidaySchedules);
         sundayAndHolidayStops = (TextView) findViewById(R.id.sundayAndHolidayStops);
+        initializeSchedulesTextViews();
+        initializeStopsTextViews();
         getSupportLoaderManager().initLoader(0, null, this);
         getSupportLoaderManager().initLoader(1, null, this);
     }
@@ -43,7 +51,7 @@ public class ScheduleAndStopActivity extends AppCompatActivity
                 GuaguasLaPalmaDB connection = new GuaguasLaPalmaDB(getContext());
                 SQLiteDatabase db = connection.getReadableDatabase();
                 Bundle extras = getIntent().getExtras();
-                String routeID = extras.getString("id");
+                routeID = extras.getString("id");
                 String query;
                 if (id == 0){
                     query = "SELECT id as _id, hour, day_of_week FROM Schedules WHERE route_id=?";
@@ -82,7 +90,13 @@ public class ScheduleAndStopActivity extends AppCompatActivity
             }
             else{
                 String name = cursor.getString(cursor.getColumnIndex("name"));
-                String stops = labourDayStops.getText().toString() + " " + name;
+                String stops;
+                if (cursor.isLast()){
+                    stops = labourDayStops.getText().toString() + " " + name;
+                }
+                else{
+                    stops = labourDayStops.getText().toString() + " " + name + ",";
+                }
                 labourDayStops.setText(stops);
                 saturdayStops.setText(stops);
                 sundayAndHolidayStops.setText(stops);
@@ -93,5 +107,17 @@ public class ScheduleAndStopActivity extends AppCompatActivity
     @Override
     public void onLoaderReset(Loader loader){
         loader.reset();
+    }
+
+    private void initializeSchedulesTextViews() {
+        labourDaySchedules.setText(R.string.checkout_times);
+        saturdaySchedules.setText(R.string.checkout_times);
+        sundayAndHolidaySchedules.setText(R.string.checkout_times);
+    }
+
+    private void initializeStopsTextViews() {
+        labourDayStops.setText(R.string.stops);
+        saturdayStops.setText(R.string.stops);
+        sundayAndHolidayStops.setText(R.string.stops);
     }
 }

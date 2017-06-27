@@ -9,10 +9,10 @@
     <Button android:id="@+id/busStopsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/busStops" />
+        android:text="@string/busStopsMapText" />
     <Button android:id="@+id/stopsAndSchedulesButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/busSchedulesAndStops" />
+        android:text="@string/busSchedulesAndStopsText" />
 </LinearLayout>
 

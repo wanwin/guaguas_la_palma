@@ -18,11 +18,16 @@ public class RouteActivity extends AppCompatActivity implements LoaderManager.Lo
 
     ListView routesList;
     CustomCursorAdapter adapter;
+    String busLineID, busLineName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.routes);
+        Bundle extras = getIntent().getExtras();
+        busLineID = extras.getString("id");
+        busLineName = extras.getString("name");
+        setTitle(busLineID + " " + busLineName);
         routesList = (ListView) findViewById(R.id.routesList);
         getSupportLoaderManager().initLoader(1, null, this);
     }
@@ -35,8 +40,6 @@ public class RouteActivity extends AppCompatActivity implements LoaderManager.Lo
             public Cursor loadInBackground() {
                 GuaguasLaPalmaDB connection = new GuaguasLaPalmaDB(getContext());
                 SQLiteDatabase db = connection.getReadableDatabase();
-                Bundle extras = getIntent().getExtras();
-                String busLineID = extras.getString("id");
                 String query = "SELECT id as _id, name FROM Routes WHERE line_id=?";
                 return db.rawQuery(query, new String[]{busLineID});
             }

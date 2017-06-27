@@ -13,6 +13,7 @@ public class BusLineAdapter extends CustomCursorAdapter{
 
     public BusLineAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
+
     }
 
     @Override
@@ -29,6 +30,7 @@ public class BusLineAdapter extends CustomCursorAdapter{
             public void onClick(View v) {
                 Intent intent = createIntent(context, RouteActivity.class);
                 intent.putExtra("id", id);
+                intent.putExtra("name", name);
                 context.startActivity(intent);
             }
         });

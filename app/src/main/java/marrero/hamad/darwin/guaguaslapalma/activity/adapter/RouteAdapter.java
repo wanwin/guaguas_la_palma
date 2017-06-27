@@ -32,6 +32,7 @@ public class RouteAdapter extends CustomCursorAdapter{
             public void onClick(View v) {
                 Intent intent = createIntent(context, ScheduleAndStopActivity.class);
                 intent.putExtra("id", id);
+                intent.putExtra("name", name);
                 context.startActivity(intent);
             }
         });
