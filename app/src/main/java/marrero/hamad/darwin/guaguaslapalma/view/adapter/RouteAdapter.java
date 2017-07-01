@@ -1,4 +1,4 @@
-package marrero.hamad.darwin.guaguaslapalma.activity.adapter;
+package marrero.hamad.darwin.guaguaslapalma.view.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,8 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import marrero.hamad.darwin.guaguaslapalma.R;
-import marrero.hamad.darwin.guaguaslapalma.activity.ScheduleAndStopActivity;
+import marrero.hamad.darwin.guaguaslapalma.view.activity.ScheduleAndStopActivity;
 
 public class RouteAdapter extends CustomCursorAdapter{
 

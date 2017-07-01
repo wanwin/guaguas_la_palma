@@ -1,7 +1,7 @@
-package marrero.hamad.darwin.guaguaslapalma.activity;
+package marrero.hamad.darwin.guaguaslapalma.view.activity;
 
-import android.content.pm.PackageManager;
 import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -9,9 +9,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
+
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.geometry.SpatialReference;
@@ -19,21 +19,26 @@ import com.esri.arcgisruntime.geometry.SpatialReferences;
 import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
+import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.LocationDisplay;
 import com.esri.arcgisruntime.mapping.view.MapView;
-import com.esri.arcgisruntime.mapping.Viewpoint;
+
 import java.util.ArrayList;
-import marrero.hamad.darwin.guaguaslapalma.model.ItemData;
-import marrero.hamad.darwin.guaguaslapalma.activity.adapter.SpinnerAdapter;
+import java.util.List;
+
 import marrero.hamad.darwin.guaguaslapalma.R;
-import static com.esri.arcgisruntime.mapping.view.LocationDisplay.*;
+import marrero.hamad.darwin.guaguaslapalma.model.ItemData;
+import marrero.hamad.darwin.guaguaslapalma.view.adapter.SpinnerAdapter;
+import marrero.hamad.darwin.guaguaslapalma.view.listener.CalloutTouchListener;
+
+import static com.esri.arcgisruntime.mapping.view.LocationDisplay.DataSourceStatusChangedEvent;
+import static com.esri.arcgisruntime.mapping.view.LocationDisplay.DataSourceStatusChangedListener;
 
 public class BusStopsMapActivity extends AppCompatActivity {
 
     private MapView mapView;
     private LocationDisplay locationDisplay;
     private Spinner spinner;
-    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,35 +46,26 @@ public class BusStopsMapActivity extends AppCompatActivity {
         setContentView(R.layout.bus_stops_map);
         mapView = (MapView) findViewById(R.id.mapView);
         spinner = (Spinner) findViewById(R.id.spinner);
-        //progressBar = (ProgressBar) findViewById(R.id.progressBar);
         final ArcGISMap map = new ArcGISMap();
         map.setBasemap(Basemap.createStreets());
         map.setInitialViewpoint(createViewpoint());
-        String serviceFeatureTableURL = getResources().getString(R.string.busStopsLayer);
-        ServiceFeatureTable featureTable = new ServiceFeatureTable(serviceFeatureTableURL);
-        featureTable.setFeatureRequestMode(ServiceFeatureTable.FeatureRequestMode.ON_INTERACTION_CACHE);
-        FeatureLayer featureLayer = new FeatureLayer(featureTable);
-        featureLayer.setMinScale(200000);
-        //PopupDefinition popupDefinition = new PopupDefinition(featureLayer);
-        //featureLayer.setPopupDefinition(popupDefinition);
-        map.getOperationalLayers().add(featureLayer);
+        String busStopsURL = getResources().getString(R.string.busStopsLayer);
+        String busLinesURL = getResources().getString(R.string.busLinesLayer);
+        ServiceFeatureTable busStopsFeatureTable = new ServiceFeatureTable(busStopsURL);
+        ServiceFeatureTable busLinesFeatureTable = new ServiceFeatureTable(busLinesURL);
+        busStopsFeatureTable.setFeatureRequestMode(ServiceFeatureTable.FeatureRequestMode.ON_INTERACTION_CACHE);
+        FeatureLayer busStopsFeatureLayer = new FeatureLayer(busStopsFeatureTable);
+        FeatureLayer busLinesFeatureLayer = new FeatureLayer(busLinesFeatureTable);
+        busStopsFeatureLayer.setMinScale(200000);
+        map.getOperationalLayers().add(busLinesFeatureLayer);
+        map.getOperationalLayers().add(busStopsFeatureLayer);
         mapView.setMap(map);
-        /*mapView.addDrawStatusChangedListener(new DrawStatusChangedListener() {
-            @Override
-            public void drawStatusChanged(DrawStatusChangedEvent drawStatusChangedEvent) {
-                if(drawStatusChangedEvent.getDrawStatus() == DrawStatus.IN_PROGRESS){
-                    progressBar.setVisibility(View.VISIBLE);
-                    Log.d("drawStatusChanged", "spinner visible");
-                }else if (drawStatusChangedEvent.getDrawStatus() == DrawStatus.COMPLETED){
-                    progressBar.setVisibility(View.INVISIBLE);
-                }
-            }
-        });*/
+        mapView.setOnTouchListener(new CalloutTouchListener(this, mapView, busStopsFeatureTable));
         locationDisplay = mapView.getLocationDisplay();
         addListenerToLocationDisplay();
-        ArrayList<ItemData> list = new ArrayList<>();
+        List<ItemData> list = new ArrayList<>();
         populateSpinnerArrayList(list);
-        SpinnerAdapter adapter = new SpinnerAdapter(this, R.layout.spinner_layout, R.id.txt, list);
+        SpinnerAdapter adapter = new SpinnerAdapter(this, R.layout.spinner_layout, R.id.optionTextView, list);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -106,6 +102,7 @@ public class BusStopsMapActivity extends AppCompatActivity {
         });
     }
 
+
     private Viewpoint createViewpoint() {
         double X_COORDINATE = 1987209.861358;
         double Y_COORDINATE = 3333189.492432;
@@ -125,22 +122,22 @@ public class BusStopsMapActivity extends AppCompatActivity {
             public void onStatusChanged(DataSourceStatusChangedEvent dataSourceStatusChangedEvent) {
                 if (dataSourceStatusChangedEvent.isStarted() || noErrorReported(dataSourceStatusChangedEvent))
                     return;
-
                 boolean permissionCheck1 = isPermissionGranted(reqPermissions[0]);
                 boolean permissionCheck2 = isPermissionGranted(reqPermissions[1]);
-
                 if (!(permissionCheck1 && permissionCheck2)) {
                     requestPermissionToUser();
                 }
                 else {
-                    String message = String.format("Error in DataSourceStatusChangedListener: %s", dataSourceStatusChangedEvent
-                            .getSource().getLocationDataSource().getError().getMessage());
+                    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
+                    Throwable error = getError(dataSourceStatusChangedEvent);
+                    String message = String.format("Error in DataSourceStatusChangedListener: %s", error.getMessage());
                     Toast.makeText(BusStopsMapActivity.this, message, Toast.LENGTH_LONG).show();
                     spinner.setSelection(0, true);
                 }
             }
 
             private boolean noErrorReported(DataSourceStatusChangedEvent dataSourceStatusChangedEvent) {
+                //noinspection ThrowableResultOfMethodCallIgnored
                 return dataSourceStatusChangedEvent.getError() == null;
             }
 
@@ -155,6 +152,10 @@ public class BusStopsMapActivity extends AppCompatActivity {
         });
     }
 
+    private Throwable getError(DataSourceStatusChangedEvent dataSourceStatusChangedEvent) {
+        return dataSourceStatusChangedEvent.getSource().getLocationDataSource().getError();
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -166,7 +167,7 @@ public class BusStopsMapActivity extends AppCompatActivity {
         }
     }
 
-    private void populateSpinnerArrayList(ArrayList<ItemData> list) {
+    private void populateSpinnerArrayList(List<ItemData> list) {
         list.add(new ItemData("Parar", R.drawable.locationdisplaydisabled));
         list.add(new ItemData("Activar", R.drawable.locationdisplayon));
         list.add(new ItemData("Recentrar", R.drawable.locationdisplayrecenter));

@@ -1,4 +1,4 @@
-package marrero.hamad.darwin.guaguaslapalma.activity.adapter;
+package marrero.hamad.darwin.guaguaslapalma.view.adapter;
 
 import android.content.Context;
 import android.content.Intent;

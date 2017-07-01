@@ -1,4 +1,4 @@
-package marrero.hamad.darwin.guaguaslapalma.activity;
+package marrero.hamad.darwin.guaguaslapalma.view.activity;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,8 +11,8 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
-import marrero.hamad.darwin.guaguaslapalma.db.GuaguasLaPalmaDB;
 import marrero.hamad.darwin.guaguaslapalma.R;
+import marrero.hamad.darwin.guaguaslapalma.db.GuaguasLaPalmaDB;
 
 public class ScheduleAndStopActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks{
@@ -44,7 +44,6 @@ public class ScheduleAndStopActivity extends AppCompatActivity
 
     @Override
     public Loader onCreateLoader(final int id, Bundle args) {
-        //String[] columns = {"id", "name", "stops_order", "route_id"};
         return new CursorLoader(this, null, null, null, null, null) {
             @Override
             public Cursor loadInBackground() {

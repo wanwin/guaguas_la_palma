@@ -1,4 +1,4 @@
-package marrero.hamad.darwin.guaguaslapalma.activity;
+package marrero.hamad.darwin.guaguaslapalma.view.activity;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,10 +9,11 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
-import marrero.hamad.darwin.guaguaslapalma.activity.adapter.BusLineAdapter;
-import marrero.hamad.darwin.guaguaslapalma.activity.adapter.CustomCursorAdapter;
-import marrero.hamad.darwin.guaguaslapalma.db.GuaguasLaPalmaDB;
+
 import marrero.hamad.darwin.guaguaslapalma.R;
+import marrero.hamad.darwin.guaguaslapalma.db.GuaguasLaPalmaDB;
+import marrero.hamad.darwin.guaguaslapalma.view.adapter.BusLineAdapter;
+import marrero.hamad.darwin.guaguaslapalma.view.adapter.CustomCursorAdapter;
 
 public class BusLineActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks{
 
@@ -29,7 +30,6 @@ public class BusLineActivity extends AppCompatActivity implements LoaderManager.
 
     @Override
     public Loader onCreateLoader(int id, Bundle args) {
-        //String[] columns = {"id", "name"};
         return new CursorLoader(this, null, null, null, null, null) {
             @Override
             public Cursor loadInBackground() {

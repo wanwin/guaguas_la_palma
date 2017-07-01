@@ -1,11 +1,12 @@
-package marrero.hamad.darwin.guaguaslapalma.activity;
+package marrero.hamad.darwin.guaguaslapalma.view.activity;
 
 import android.content.Intent;
-import marrero.hamad.darwin.guaguaslapalma.R;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+
+import marrero.hamad.darwin.guaguaslapalma.R;
 
 public class MainActivity extends AppCompatActivity {
 
