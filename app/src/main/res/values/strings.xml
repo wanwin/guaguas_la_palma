@@ -10,5 +10,5 @@
     <string name="saturdayStopsAndSchedules">Sábados</string>
     <string name="sundayAndHolidayStopsAndSchedules">Domingos y festivos</string>
     <string name="checkout_times">Horas de salida: </string>
-    <string name="stops">Paradas: </string>
+    <string name="stops">Parada:  </string>
 </resources>

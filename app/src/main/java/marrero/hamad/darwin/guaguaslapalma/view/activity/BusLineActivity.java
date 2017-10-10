@@ -25,7 +25,7 @@ public class BusLineActivity extends AppCompatActivity implements LoaderManager.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bus_lines);
         busLinesList = (ListView) findViewById(R.id.busLinesList);
-        getSupportLoaderManager().initLoader(1, null, this);
+        getSupportLoaderManager().initLoader(0, null, this);
     }
 
     @Override
@@ -35,7 +35,8 @@ public class BusLineActivity extends AppCompatActivity implements LoaderManager.
             public Cursor loadInBackground() {
                 GuaguasLaPalmaDB connection = new GuaguasLaPalmaDB(getContext());
                 SQLiteDatabase db = connection.getReadableDatabase();
-                String query = "SELECT id as _id,name FROM Bus_Lines";
+                String query = "SELECT route_id as _id, route_short_name, route_long_name, " +
+                        "route_color, route_text_color FROM routes ORDER BY route_short_name ASC";
                 return db.rawQuery(query, null);
             }
         };
@@ -51,6 +52,7 @@ public class BusLineActivity extends AppCompatActivity implements LoaderManager.
 
     @Override
     public void onLoaderReset(Loader loader){
+
         adapter.swapCursor(null);
     }
 }

@@ -22,10 +22,15 @@ public class RouteAdapter extends CustomCursorAdapter{
     }
 
     @Override
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        return mInflater.inflate(R.layout.routes_listitem, parent, false);
+    }
+
+    @Override
     public void bindView(View view, final Context context, Cursor cursor) {
         TextView routeTextView = (TextView) view.findViewById(R.id.routeTextView);
         final String id = cursor.getString(cursor.getColumnIndex("_id"));
-        final String name = cursor.getString(cursor.getColumnIndex("name"));
+        final String name = cursor.getString(cursor.getColumnIndex("trip_headsign"));
         routeTextView.setText(name);
         routeTextView.setTextColor(Color.BLACK);
         routeTextView.setOnClickListener(new View.OnClickListener() {
@@ -37,10 +42,5 @@ public class RouteAdapter extends CustomCursorAdapter{
                 context.startActivity(intent);
             }
         });
-    }
-
-    @Override
-    public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        return mInflater.inflate(R.layout.routes_listitem, parent, false);
     }
 }

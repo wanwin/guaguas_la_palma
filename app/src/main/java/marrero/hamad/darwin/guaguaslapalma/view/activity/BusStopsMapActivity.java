@@ -60,7 +60,8 @@ public class BusStopsMapActivity extends AppCompatActivity {
         map.getOperationalLayers().add(busLinesFeatureLayer);
         map.getOperationalLayers().add(busStopsFeatureLayer);
         mapView.setMap(map);
-        mapView.setOnTouchListener(new CalloutTouchListener(this, mapView, busStopsFeatureTable));
+        mapView.setOnTouchListener(new CalloutTouchListener(this, mapView));
+        //mapView.setOnTouchListener(new CalloutTouchListener(this, mapView));
         locationDisplay = mapView.getLocationDisplay();
         addListenerToLocationDisplay();
         List<ItemData> list = new ArrayList<>();
@@ -168,11 +169,11 @@ public class BusStopsMapActivity extends AppCompatActivity {
     }
 
     private void populateSpinnerArrayList(List<ItemData> list) {
-        list.add(new ItemData("Parar", R.drawable.locationdisplaydisabled));
-        list.add(new ItemData("Activar", R.drawable.locationdisplayon));
+        list.add(new ItemData("Detener geolocalización", R.drawable.locationdisplaydisabled));
+        list.add(new ItemData("Activar geolocalización", R.drawable.locationdisplayon));
         list.add(new ItemData("Recentrar", R.drawable.locationdisplayrecenter));
-        list.add(new ItemData("Navegación", R.drawable.locationdisplaynavigation));
-        list.add(new ItemData("Brújula", R.drawable.locationdisplayheading));
+        list.add(new ItemData("Activar navegación", R.drawable.locationdisplaynavigation));
+        list.add(new ItemData("Activar brújula", R.drawable.locationdisplayheading));
     }
 
     @Override

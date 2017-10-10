@@ -2,44 +2,66 @@ package marrero.hamad.darwin.guaguaslapalma.view.activity;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import marrero.hamad.darwin.guaguaslapalma.R;
 import marrero.hamad.darwin.guaguaslapalma.db.GuaguasLaPalmaDB;
+import marrero.hamad.darwin.guaguaslapalma.view.adapter.StopAdapter;
 
 public class ScheduleAndStopActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks{
 
-    TextView labourDaySchedules, labourDayStops;
-    TextView saturdaySchedules, saturdayStops;
-    TextView sundayAndHolidaySchedules, sundayAndHolidayStops;
-    String routeID, routeName;
+    /*private TextView labourDaySchedules, labourDayStops;
+    private TextView saturdaySchedules, saturdayStops;
+    private TextView sundayAndHolidaySchedules, sundayAndHolidayStops;*/
+
+    private String routeID, routeName;
+    private Spinner stopsSpinner;
+    private StopAdapter stopAdapter;
+    private ArrayList<String> stopIDArrayList;
+    private LinearLayout scheduleAndStopLinearLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.schedules_and_stops);
+        scheduleAndStopLinearLayout = (LinearLayout) findViewById(R.id.scheduleAndStopLinearLayout);
+        final ScheduleAndStopActivity activity = this;
         Bundle extras = getIntent().getExtras();
         routeID = extras.getString("id");
         routeName = extras.getString("name");
         setTitle(routeName);
-        labourDaySchedules = (TextView) findViewById(R.id.labourDaySchedules);
-        labourDayStops = (TextView) findViewById(R.id.labourDayStops);
+        stopsSpinner = (Spinner) findViewById(R.id.stopsSpinner);
+        /*labourDaySchedules = (TextView) findViewById(R.id.labourDaySchedules);
         saturdaySchedules = (TextView) findViewById(R.id.saturdaySchedules);
-        saturdayStops = (TextView) findViewById(R.id.saturdayStops);
         sundayAndHolidaySchedules = (TextView) findViewById(R.id.sundayAndHolidaySchedules);
-        sundayAndHolidayStops = (TextView) findViewById(R.id.sundayAndHolidayStops);
         initializeSchedulesTextViews();
-        initializeStopsTextViews();
+        initializeStopsTextViews();*/
         getSupportLoaderManager().initLoader(0, null, this);
-        getSupportLoaderManager().initLoader(1, null, this);
+        stopsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                getSupportLoaderManager().restartLoader(1, null, activity);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     @Override
@@ -52,13 +74,24 @@ public class ScheduleAndStopActivity extends AppCompatActivity
                 Bundle extras = getIntent().getExtras();
                 routeID = extras.getString("id");
                 String query;
-                if (id == 0){
-                    query = "SELECT id as _id, hour, day_of_week FROM Schedules WHERE route_id=?";
+                if (id == 0) {
+                    query = "SELECT DISTINCT stops.stop_id as _id, stops.stop_name FROM trips " +
+                            "INNER JOIN stop_times ON stop_times.trip_id = trips.trip_id " +
+                            "INNER JOIN stops ON stops.stop_id = stop_times.stop_id " +
+                            "WHERE route_id = ? AND trip_headsign = ? " +
+                            "ORDER BY stop_sequence ASC;";
+                            return db.rawQuery(query, new String[]{routeID, routeName});
                 }
                 else{
-                    query = "SELECT id as _id, name FROM Stops WHERE route_id=?";
+                    String stopID = stopIDArrayList.get(stopsSpinner.getSelectedItemPosition());
+                    query = "SELECT stop_times.arrival_time, calendar.days FROM stop_times " +
+                            "INNER JOIN trips ON stop_times.trip_id = trips.trip_id " +
+                            "INNER JOIN calendar ON trips.service_id = calendar.service_id " +
+                            "WHERE stop_id = ? AND trips.trip_headsign == ? AND arrival_time != \"\" " +
+                            "ORDER BY arrival_time ASC;";
+                            return db.rawQuery(query, new String[]{stopID, routeName});
                 }
-                return db.rawQuery(query, new String[]{routeID});
+
             }
         };
     }
@@ -66,57 +99,51 @@ public class ScheduleAndStopActivity extends AppCompatActivity
     @Override
     public void onLoadFinished(Loader loader, Object data){
         Cursor cursor = (Cursor) data;
-        while (cursor.moveToNext()){
-            if (loader.getId() == 0){
-                String dayOfWeek = cursor.getString(cursor.getColumnIndex("day_of_week"));
-                String hour = cursor.getString(cursor.getColumnIndex("hour"));
-                String schedule;
-                if (dayOfWeek.equals("midweek")){
-                    schedule = labourDaySchedules.getText().toString() + " " + hour;
-                    labourDaySchedules.setTextColor(Color.BLACK);
-                    labourDaySchedules.setText(schedule);
-                }
-                if (dayOfWeek.equals("saturday")){
-                    schedule = saturdaySchedules.getText().toString() + " " + hour;
-                    saturdaySchedules.setTextColor(Color.BLACK);
-                    saturdaySchedules.setText(schedule);
-                }
-                if (dayOfWeek.equals("sunday or holiday")){
-                    schedule = sundayAndHolidaySchedules.getText().toString() + " " + hour;
-                    sundayAndHolidaySchedules.setTextColor(Color.BLACK);
-                    sundayAndHolidaySchedules.setText(schedule);
-                }
+        cursor.moveToFirst();
+        int id = loader.getId();
+        if (id == 0){
+            stopIDArrayList = new ArrayList<>();
+            while (!cursor.isAfterLast()){
+                final String stopID = cursor.getString(cursor.getColumnIndex("_id"));
+                stopIDArrayList.add(stopID);
+                cursor.moveToNext();
             }
-            else{
-                String name = cursor.getString(cursor.getColumnIndex("name"));
-                String stops;
-                if (cursor.isLast()){
-                    stops = labourDayStops.getText().toString() + " " + name;
+            cursor.moveToFirst();
+            stopAdapter = new StopAdapter(getApplicationContext(), cursor, 0);
+            stopsSpinner.setAdapter(stopAdapter);
+        }
+        else{
+            scheduleAndStopLinearLayout.removeViews(1, scheduleAndStopLinearLayout.getChildCount() - 1);
+            /*for(int i = 0; i <= scheduleAndStopLinearLayout.getChildCount(); i++){
+                if(scheduleAndStopLinearLayout.getChildAt(i) instanceof TextView){
+                    scheduleAndStopLinearLayout.removeView(scheduleAndStopLinearLayout.getChildAt(i));
+                }
+            }*/
+            HashMap<String, TextView> daysHashMap = new HashMap<>();
+            while (!cursor.isAfterLast()){
+                String days = cursor.getString(cursor.getColumnIndex("days"));
+                String hour = cursor.getString(cursor.getColumnIndex("arrival_time"));
+                String schedule;
+                if (daysHashMap.containsKey(days)){
+                    schedule = daysHashMap.get(days).getText().toString() + " " + hour;
+                    daysHashMap.get(days).setText(schedule);
                 }
                 else{
-                    stops = labourDayStops.getText().toString() + " " + name + ",";
+                    TextView textView = new TextView(ScheduleAndStopActivity.this);
+                    scheduleAndStopLinearLayout.addView(textView);
+                    String daysOfWeek = days + "\n";
+                    textView.setText(daysOfWeek);
+                    daysHashMap.put(days, textView);
+                    schedule = daysHashMap.get(days).getText().toString() + " " + hour;
+                    daysHashMap.get(days).setText(schedule);
                 }
-                labourDayStops.setText(stops);
-                saturdayStops.setText(stops);
-                sundayAndHolidayStops.setText(stops);
+                cursor.moveToNext();
             }
         }
     }
 
     @Override
     public void onLoaderReset(Loader loader){
-        loader.reset();
-    }
-
-    private void initializeSchedulesTextViews() {
-        labourDaySchedules.setText(R.string.checkout_times);
-        saturdaySchedules.setText(R.string.checkout_times);
-        sundayAndHolidaySchedules.setText(R.string.checkout_times);
-    }
-
-    private void initializeStopsTextViews() {
-        labourDayStops.setText(R.string.stops);
-        saturdayStops.setText(R.string.stops);
-        sundayAndHolidayStops.setText(R.string.stops);
+        stopAdapter.swapCursor(null);
     }
 }

@@ -1,96 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scheduleAndStopLinearLayout"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-        <TextView android:id="@+id/labourDayStopsAndSchedulesTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/cyan"
-            android:text="@string/labourDayStopsAndSchedules"
-            android:textColor="@color/black"
-            android:textSize="20sp"/>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#000000" />
-        <TextView android:id="@+id/labourDaySchedules"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="20sp"/>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#000000" />
-        <TextView android:id="@+id/labourDayStops"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="20sp"/>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#000000" />
-        <TextView android:id="@+id/saturdayStopsAndSchedulesTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/cyan"
-            android:text="@string/saturdayStopsAndSchedules"
-            android:textColor="@color/black"
-            android:textSize="20sp"/>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#000000" />
-        <TextView android:id="@+id/saturdaySchedules"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="20sp"/>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#000000" />
         <TextView
-            android:id="@+id/saturdayStops"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#000000" />
-        <TextView android:id="@+id/sundayAndHolidayStopsAndSchedulesTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/cyan"
-            android:text="@string/sundayAndHolidayStopsAndSchedules"
-            android:textColor="@color/black"
-            android:textSize="20sp"/>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#000000" />
-        <TextView
-            android:id="@+id/sundayAndHolidaySchedules"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="20sp"/>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#000000" />
-        <TextView
-            android:id="@+id/sundayAndHolidayStops"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="20sp"/>
+            android:text="@string/stops"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textColor="@color/black"/>
+        <Spinner android:id="@+id/stopsSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </Spinner>
     </LinearLayout>
-</ScrollView>
+    <!-- <TextView android:id="@+id/labourDaySchedules"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="20sp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#000000" />
+    <TextView android:id="@+id/saturdaySchedules"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="20sp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#000000" />
+    <TextView
+        android:id="@+id/sundayAndHolidaySchedules"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="20sp"/> -->
+</LinearLayout>
