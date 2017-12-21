@@ -1,5 +1,6 @@
 package marrero.hamad.darwin.guaguaslapalma.view.activity;
 
+import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ public class RouteActivity extends AppCompatActivity implements LoaderManager.Lo
         getSupportLoaderManager().initLoader(0, null, this);
     }
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     public Loader onCreateLoader(int id, Bundle args) {
         return new CursorLoader(this, null, null, null, null, null) {

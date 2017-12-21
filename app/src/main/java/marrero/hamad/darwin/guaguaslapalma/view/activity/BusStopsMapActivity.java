@@ -2,7 +2,9 @@ package marrero.hamad.darwin.guaguaslapalma.view.activity;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -20,13 +22,21 @@ import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
 import com.esri.arcgisruntime.mapping.Viewpoint;
+import com.esri.arcgisruntime.mapping.view.Graphic;
+import com.esri.arcgisruntime.mapping.view.GraphicsOverlay;
 import com.esri.arcgisruntime.mapping.view.LocationDisplay;
 import com.esri.arcgisruntime.mapping.view.MapView;
+import com.esri.arcgisruntime.symbology.PictureMarkerSymbol;
+import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol;
+import com.esri.arcgisruntime.symbology.Symbol;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import marrero.hamad.darwin.guaguaslapalma.R;
+import marrero.hamad.darwin.guaguaslapalma.model.Bus;
+import marrero.hamad.darwin.guaguaslapalma.model.BusRoute;
 import marrero.hamad.darwin.guaguaslapalma.model.ItemData;
 import marrero.hamad.darwin.guaguaslapalma.view.adapter.SpinnerAdapter;
 import marrero.hamad.darwin.guaguaslapalma.view.listener.CalloutTouchListener;
@@ -37,8 +47,22 @@ import static com.esri.arcgisruntime.mapping.view.LocationDisplay.DataSourceStat
 public class BusStopsMapActivity extends AppCompatActivity {
 
     private MapView mapView;
+    private GraphicsOverlay graphicsOverlay;
     private LocationDisplay locationDisplay;
     private Spinner spinner;
+    private static int id = 0;
+    private static final int MS_DELAY = 10;
+    private static final int NUM_BUSES = 17; // number of taxis at the start of the app
+    private static final int NUM_ROUTES = 17; // number of routes (in text files)
+    private static final String PATH_TO_IMAGE = "resources/taxi.png";
+    private static final String routesPath = "assets/routes/";
+    private static final String FSP = System.getProperty("file.separator");
+    private Symbol busSymbol;
+
+    private List<BusRoute> routes = new ArrayList<>();
+    private List<Bus> buses = new ArrayList<>();
+    private Random random = new Random();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +70,7 @@ public class BusStopsMapActivity extends AppCompatActivity {
         setContentView(R.layout.bus_stops_map);
         mapView = (MapView) findViewById(R.id.mapView);
         spinner = (Spinner) findViewById(R.id.spinner);
-        final ArcGISMap map = new ArcGISMap();
+        ArcGISMap map = new ArcGISMap();
         map.setBasemap(Basemap.createStreets());
         map.setInitialViewpoint(createViewpoint());
         String busStopsURL = getResources().getString(R.string.busStopsLayer);
@@ -61,7 +85,9 @@ public class BusStopsMapActivity extends AppCompatActivity {
         map.getOperationalLayers().add(busStopsFeatureLayer);
         mapView.setMap(map);
         mapView.setOnTouchListener(new CalloutTouchListener(this, mapView));
-        //mapView.setOnTouchListener(new CalloutTouchListener(this, mapView));
+        graphicsOverlay = new GraphicsOverlay();
+        mapView.getGraphicsOverlays().add(graphicsOverlay);
+        busSymbol = makeBusSymbol();
         locationDisplay = mapView.getLocationDisplay();
         addListenerToLocationDisplay();
         List<ItemData> list = new ArrayList<>();
@@ -110,8 +136,71 @@ public class BusStopsMapActivity extends AppCompatActivity {
         return new Viewpoint(new Point(-X_COORDINATE, Y_COORDINATE, getWebMercator()), 475000);
     }
 
-    private SpatialReference getWebMercator() {
+    private SpatialReference getWebMercator(){
         return SpatialReferences.getWebMercator();
+    }
+
+    private void MoveTaxis() {
+        for (Bus bus: buses) {
+            if (bus.MoveTaxi()) {
+                graphicsOverlay.getGraphics().get(bus.getGraphicIdentifier()).setGeometry(bus.getCurrentPosition());
+            }
+        }
+    }
+
+    private void addBuses(int numBuses) {
+        for (int bus=0; bus < numBuses; bus++) {
+            // choose a random route from our routes
+            BusRoute route = routes.get(random.nextInt(routes.size()));
+            // make one bus, starts at a random position on the route
+            MakeBus(route, random.nextInt(route.getXPos().size()));
+        }
+    }
+
+    private void MakeBus(BusRoute route, int PositionOnRoute) {
+        Point point = new Point((route.getXPos().get(PositionOnRoute)).intValue(), (route.getYPos().get(PositionOnRoute)).intValue());
+        Graphic graphic = new Graphic(point, busSymbol);
+        graphicsOverlay.getGraphics().add(graphic);
+        buses.add(new Bus(route, PositionOnRoute, id));
+        id++;
+    }
+    private Symbol makeBusSymbol() {
+
+        PictureMarkerSymbol symbol;
+        try {
+            symbol = new PictureMarkerSymbol(PATH_TO_IMAGE);
+            symbol.setHeight(20);
+            symbol.setWidth(20);
+        }
+        catch (Exception e) {
+            System.err.println("Imposible crear símbolo marcador de imagen");
+            SimpleMarkerSymbol errorSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, 12, 20);
+            errorSymbol.setColor(Color.YELLOW);
+            return errorSymbol;
+        }
+        return symbol;
+    }
+
+    private void SetUpTaxiSimulation() {
+        // make taxi routes
+        for (int i = 1; i <= NUM_ROUTES; i++ ) {
+            routes.add(new BusRoute(routesPath + FSP + "Route"+ i + ".txt"));
+        }
+
+        // add some taxis to start
+        addBuses(NUM_BUSES);
+
+        final CountDownTimer countDownTimer = new CountDownTimer(MS_DELAY, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+            }
+
+            public void onFinish() {
+                MoveTaxis();
+                start();
+            }
+        };
+        countDownTimer.start();
     }
 
     private void addListenerToLocationDisplay() {
@@ -169,9 +258,9 @@ public class BusStopsMapActivity extends AppCompatActivity {
     }
 
     private void populateSpinnerArrayList(List<ItemData> list) {
-        list.add(new ItemData("Detener geolocalización", R.drawable.locationdisplaydisabled));
+        list.add(new ItemData("Pulsar botón para seleccionar geolocalización", R.drawable.locationdisplaydisabled));
         list.add(new ItemData("Activar geolocalización", R.drawable.locationdisplayon));
-        list.add(new ItemData("Recentrar", R.drawable.locationdisplayrecenter));
+        list.add(new ItemData("Centrar", R.drawable.locationdisplayrecenter));
         list.add(new ItemData("Activar navegación", R.drawable.locationdisplaynavigation));
         list.add(new ItemData("Activar brújula", R.drawable.locationdisplayheading));
     }

@@ -1,10 +1,13 @@
 package marrero.hamad.darwin.guaguaslapalma.view.activity;
 
+import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -24,10 +27,6 @@ import marrero.hamad.darwin.guaguaslapalma.view.adapter.StopAdapter;
 public class ScheduleAndStopActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks{
 
-    /*private TextView labourDaySchedules, labourDayStops;
-    private TextView saturdaySchedules, saturdayStops;
-    private TextView sundayAndHolidaySchedules, sundayAndHolidayStops;*/
-
     private String routeID, routeName;
     private Spinner stopsSpinner;
     private StopAdapter stopAdapter;
@@ -41,15 +40,12 @@ public class ScheduleAndStopActivity extends AppCompatActivity
         scheduleAndStopLinearLayout = (LinearLayout) findViewById(R.id.scheduleAndStopLinearLayout);
         final ScheduleAndStopActivity activity = this;
         Bundle extras = getIntent().getExtras();
-        routeID = extras.getString("id");
-        routeName = extras.getString("name");
+        if (extras != null) {
+            routeID = extras.getString("id");
+            routeName = extras.getString("name");
+        }
         setTitle(routeName);
         stopsSpinner = (Spinner) findViewById(R.id.stopsSpinner);
-        /*labourDaySchedules = (TextView) findViewById(R.id.labourDaySchedules);
-        saturdaySchedules = (TextView) findViewById(R.id.saturdaySchedules);
-        sundayAndHolidaySchedules = (TextView) findViewById(R.id.sundayAndHolidaySchedules);
-        initializeSchedulesTextViews();
-        initializeStopsTextViews();*/
         getSupportLoaderManager().initLoader(0, null, this);
         stopsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -64,6 +60,7 @@ public class ScheduleAndStopActivity extends AppCompatActivity
         });
     }
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     public Loader onCreateLoader(final int id, Bundle args) {
         return new CursorLoader(this, null, null, null, null, null) {
@@ -71,8 +68,6 @@ public class ScheduleAndStopActivity extends AppCompatActivity
             public Cursor loadInBackground() {
                 GuaguasLaPalmaDB connection = new GuaguasLaPalmaDB(getContext());
                 SQLiteDatabase db = connection.getReadableDatabase();
-                Bundle extras = getIntent().getExtras();
-                routeID = extras.getString("id");
                 String query;
                 if (id == 0) {
                     query = "SELECT DISTINCT stops.stop_id as _id, stops.stop_name FROM trips " +
@@ -88,7 +83,7 @@ public class ScheduleAndStopActivity extends AppCompatActivity
                             "INNER JOIN trips ON stop_times.trip_id = trips.trip_id " +
                             "INNER JOIN calendar ON trips.service_id = calendar.service_id " +
                             "WHERE stop_id = ? AND trips.trip_headsign == ? AND arrival_time != \"\" " +
-                            "ORDER BY arrival_time ASC;";
+                            "ORDER BY days_order, arrival_time;";
                             return db.rawQuery(query, new String[]{stopID, routeName});
                 }
 
@@ -114,29 +109,32 @@ public class ScheduleAndStopActivity extends AppCompatActivity
         }
         else{
             scheduleAndStopLinearLayout.removeViews(1, scheduleAndStopLinearLayout.getChildCount() - 1);
-            /*for(int i = 0; i <= scheduleAndStopLinearLayout.getChildCount(); i++){
-                if(scheduleAndStopLinearLayout.getChildAt(i) instanceof TextView){
-                    scheduleAndStopLinearLayout.removeView(scheduleAndStopLinearLayout.getChildAt(i));
-                }
-            }*/
             HashMap<String, TextView> daysHashMap = new HashMap<>();
             while (!cursor.isAfterLast()){
                 String days = cursor.getString(cursor.getColumnIndex("days"));
                 String hour = cursor.getString(cursor.getColumnIndex("arrival_time"));
                 String schedule;
-                if (daysHashMap.containsKey(days)){
-                    schedule = daysHashMap.get(days).getText().toString() + " " + hour;
-                    daysHashMap.get(days).setText(schedule);
+                if (!daysHashMap.containsKey(days)){
+                    TextView daysTextView = new TextView(ScheduleAndStopActivity.this);
+                    daysTextView.setText(days);
+                    daysTextView.setTextSize(24);
+                    daysTextView.setTextColor(ContextCompat.getColor(getApplicationContext(),
+                            R.color.black));
+                    daysTextView.setTypeface(null, Typeface.BOLD);
+                    scheduleAndStopLinearLayout.addView(daysTextView);
+                    TextView scheduleTextView = new TextView(ScheduleAndStopActivity.this);
+                    scheduleTextView.setTextSize(24);
+                    scheduleTextView.setTextColor(ContextCompat.getColor(getApplicationContext(),
+                            R.color.black));
+                    scheduleAndStopLinearLayout.addView(scheduleTextView);
+                    daysHashMap.put(days, scheduleTextView);
                 }
-                else{
-                    TextView textView = new TextView(ScheduleAndStopActivity.this);
-                    scheduleAndStopLinearLayout.addView(textView);
-                    String daysOfWeek = days + "\n";
-                    textView.setText(daysOfWeek);
-                    daysHashMap.put(days, textView);
+                String scheduleTextViewText = daysHashMap.get(days).getText().toString();
+                if (scheduleTextViewText.equals("")) {
+                    schedule = daysHashMap.get(days).getText().toString() + hour;
+                }else
                     schedule = daysHashMap.get(days).getText().toString() + " " + hour;
-                    daysHashMap.get(days).setText(schedule);
-                }
+                daysHashMap.get(days).setText(schedule);
                 cursor.moveToNext();
             }
         }

@@ -52,8 +52,8 @@ public class CalloutTouchListener extends DefaultMapViewOnTouchListener{
         return super.onSingleTapConfirmed(e);
     }
 
-    private void identifyTouchedGeoElement(MotionEvent e) {
-        android.graphics.Point screenPoint = createPoint((int) e.getX(), (int) e.getY());
+    private void identifyTouchedGeoElement(MotionEvent motionEvent) {
+        android.graphics.Point screenPoint = createPoint((int) motionEvent.getX(), (int) motionEvent.getY());
         final Point arcGISClickPoint = mMapView.screenToLocation(createPointWithRoundedCoordinates(screenPoint.x,
                 screenPoint.y));
         int tolerance = 10;
@@ -113,7 +113,7 @@ public class CalloutTouchListener extends DefaultMapViewOnTouchListener{
                                             }
                                         } catch (Exception e) {
                                             Log.e(context.getResources().getString(R.string.app_name),
-                                                    "Select feature failed: " + e.getMessage());
+                                                    "No se ha seleccionado un elemento: " + e.getMessage());
                                         }
                                     }
                                 });

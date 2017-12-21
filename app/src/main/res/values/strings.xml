@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">GuaguasLaPalma</string>
+    <string name="my_app_name">GuaguasLaPalma</string>
     <string name="filter_title_google">View filter for Google searchs</string>
     <string name="busStopsMapText">Ver mapa con paradas de guagua</string>
     <string name="busSchedulesAndStopsText">Ver horarios y paradas</string>
@@ -10,5 +11,6 @@
     <string name="saturdayStopsAndSchedules">Sábados</string>
     <string name="sundayAndHolidayStopsAndSchedules">Domingos y festivos</string>
     <string name="checkout_times">Horas de salida: </string>
-    <string name="stops">Parada:  </string>
+    <string name="stops">Parada:</string>
+    <string name="splashImageDescription">Guaguas La Palma</string>
 </resources>
